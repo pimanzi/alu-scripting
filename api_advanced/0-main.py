@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-0-main
+Retrieve the number of subscribers from the external module 0-subs.py
+The retrieved subscriber count is then printed to the console
 """
 import sys
 

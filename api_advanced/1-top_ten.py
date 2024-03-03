@@ -1,17 +1,33 @@
 #!/usr/bin/python3
-"""Prints the title of the first 10 hot posts listed for a given subreddit"""
+"""
+Module
+"""
 
+import json
 import requests
+import sys
 
 
 def top_ten(subreddit):
-    """Main function"""
-    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    headers = {'User-agent': 'myRedditScript/1.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
-    try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        HOT_POSTS = RESPONSE.json().get("data").get("children")
-        [print(post.get('data').get('title')) for post in HOT_POSTS]
-    except Exception:
-        print(None)
+    if response.status_code == 200:
+        data = response.json()
+        if 'data' in data and 'children' in data['data']:
+            top_posts = [post['data']['title']
+                         for post in data['data']['children']]
+            for post_title in top_posts:
+                print(post_title)
+        else:
+            print("No posts found")
+    else:
+        print("None")
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Please pass an argument for the subreddit to search.")
+    else:
+        top_ten(sys.argv[1])
